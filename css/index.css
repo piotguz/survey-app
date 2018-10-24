@@ -1,0 +1,13 @@
+.panel-footer  {
+    background-color: white!important;
+}
+
+body {
+    background-image: url('../img/background.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: repeat-y;
+    font-size: 12px;
+}
+
+html {height: 100%; width: 100%}

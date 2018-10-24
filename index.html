@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AS17+ - Komunikacja miejska - Benefit pozapłacowy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="node_modules\w3-css\3\w3.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="node_modules\bootstrap\dist\css\bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="node_modules\bootstrap-material-design\dist\css\bootstrap-material-design.min.css" />
+    <link rel="stylesheet" type="text/css" href="node_modules\bootstrap-material-design\dist\css\ripples.min.css" />
+    <link rel="stylesheet" type="text/css" href="css\index.css" />
+    <script src="node_modules\jquery\dist\jquery.min.js"></script>
+    <script src="node_modules\survey-jquery\survey.jquery.min.js"></script>
+    <script src="node_modules\bootstrap-material-design\dist\js\material.min.js"></script>
+    <script src="node_modules\bootstrap-material-design\dist\js\ripples.min.js"></script>
+    <script src=""></script>
+</head>
+
+<body>
+    <main class="w3-padding-24">
+
+        <section class="w3-content w3-mobile w3-centered">
+            <article class="w3-card w3-padding w3-margin-top w3-margin-bottom w3-white">
+
+                <!-- Survey injection point-->
+                <div id="surveyContainer" class="w3-padding"></div>
+
+            </article>
+
+        </section>
+
+
+    </main>
+    <script>
+
+        $.material.init();
+
+        Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
+        Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
+        Survey.StylesManager.applyTheme("bootstrapmaterial");
+
+        var surveyJSON = { locale: "pl", pages: [{ name: "Dane osobowe", elements: [{ type: "text", name: "FirstNameLastName", title: { pl: "Imię i nazwisko" }, enableIf: "{Agreement} = true", isRequired: true }, { type: "text", name: "Department", title: { pl: "Nazwa działu" }, enableIf: "{Agreement} = true", isRequired: true }, { type: "boolean", name: "Agreement", title: { pl: "Wyrażam zgodę na przetwarzanie danych osobowych przez Robert Bosch Polska w celu i zakresie niezbędnym w procesie analizy wyników niniejszej ankiety." }, isRequired: true, label: { pl: "Wyrażam zgodę na przetwarzanie danych osobowych przez Robert Bosch Polska w celu i zakresie niezbędnym w procesie analizy wyników niniejszej ankiety." } }], title: { pl: "Dane osobowe" } }, { name: "Ankieta", elements: [{ type: "boolean", name: "AgreementForDataProcessing", visibleIf: "{FirstAndLastName} notempty or {Department} notempty", title: { pl: "Wyrażam zgodę na przetwarzanie danych osobowych przez Robert Bosch Polska w celu i zakresie niezbędnym w procesie analizy danych statystycznych." }, isRequired: true }, { type: "dropdown", name: "TimeOfTravel", title: { pl: "Ile czasu dziennie zajmują Ci dojazdy do pracy?" }, isRequired: true, choices: [{ value: "LessThanHour", text: { pl: "Mniej niż godzinę" } }, { value: "BetweenOneAndTwoHours", text: { pl: "Od jednej do dwóch godzin" } }, { value: "MoreThanTwoHours", text: { pl: "Więcej niż dwie godziny" } }, { value: "HardToSay", text: { pl: "Trudno powiedzieć" } }] }, { type: "dropdown", name: "AreYouUsingPublicTransportation", title: { pl: "Czy dojeżdżasz do pracy korzystając z komunikacji miejskiej?" }, isRequired: true, choices: [{ value: "Yes", text: { pl: "TAK" } }, { value: "No", text: { pl: "NIE" } }, { value: "NoBut", text: { pl: "NIE, ale dojeżdzałbym/dojeżdżałabym gdyby..." } }] }, { type: "text", name: "WhatWouldConvinceYouToUsePublicTransportation", visibleIf: "{AreYouUsingPublicTransportation} = \"NoBut\"", title: { pl: "Co skłoniłoby Cię do używania komunikacji miejskiej?" }, isRequired: true, placeHolder: { pl: "Latające pociągi, teleportacja, itp..." } }, { type: "checkbox", name: "CommonicationOptions", visibleIf: "{AreYouUsingPublicTransportation} = \"Yes\" or {AreYouUsingPublicTransportation} = \"NoBut\"", title: { pl: "Jakich środków komunikacji miejskiej używasz lub używałbyś/używałabyś dojeżdżając do pracy?" }, isRequired: true, choices: [{ value: "ZTM_WKD", text: { pl: "ZTM (z WKD włącznie)" } }, { value: "KM", text: { pl: "Koleje Mazowieckie" } }, "PKP", { value: "OTHERS", text: { pl: "Inne..." } }] }, { type: "text", name: "OtherCommunicationOptions", visibleIf: "{CommonicationOptions} contains \"OTHERS\"", isRequired: true, titleLocation: "hidden", placeHolder: { pl: "Podaj 'inne' środki komunikacji..." } }, { type: "dropdown", name: "AreyInterestedInBenefit", visibleIf: "{AreYouUsingPublicTransportation} = \"Yes\" or {AreYouUsingPublicTransportation} = \"NoBut\"", title: { pl: "Czy byłbyś/byłabyś zainteresowana dopłatą do biletów komunikacji miejskiej?" }, isRequired: true, choices: [{ value: "Yes", text: { pl: "TAK" } }, { value: "No", text: { pl: "NIE" } }] }], title: { default: "Personal data", pl: "Ankieta" } }], cookieName: "surveySessionId", showPageTitles: false, startSurveyText: "Rozpocznij", pagePrevText: "Wstecz", pageNextText: "Dalej", completeText: "Gotowe!" }
+
+
+        function sendDataToServer(survey) {
+            //send Ajax request to your web server.
+            alert("The results are:" + JSON.stringify(survey.data));
+        }
+
+        var survey = new Survey.Model(surveyJSON);
+
+        $("#surveyContainer").Survey({
+            model: survey,
+            onComplete: sendDataToServer
+        });</script>
+</body>
+
+</html>
