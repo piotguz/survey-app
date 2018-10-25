@@ -15,7 +15,7 @@
     <script src="node_modules\survey-jquery\survey.jquery.min.js"></script>
     <script src="node_modules\bootstrap-material-design\dist\js\material.min.js"></script>
     <script src="node_modules\bootstrap-material-design\dist\js\ripples.min.js"></script>
-    <script src=""></script>
+    <script src="survey.js"></script>
 </head>
 
 <body>
@@ -34,14 +34,27 @@
 
     </main>
     <script>
-
         $.material.init();
 
         Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
         Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
         Survey.StylesManager.applyTheme("bootstrapmaterial");
+        
+        $.ajax({
+            async:false,
+            url: "survey.json?" + new Date(),
+            type: "GET",
+            dataType: "json"
+        }).done(function (result) {
+            console.log(result)
+            surveyJSON = JSON.parse(result.responseText);
+        }).fail(function (error) {
+            console.log(error)
+        });
 
-        var surveyJSON = { locale: "pl", pages: [{ name: "Dane osobowe", elements: [{ type: "text", name: "FirstNameLastName", title: { pl: "Imię i nazwisko" }, enableIf: "{Agreement} = true", isRequired: true }, { type: "text", name: "Department", title: { pl: "Nazwa działu" }, enableIf: "{Agreement} = true", isRequired: true }, { type: "boolean", name: "Agreement", title: { pl: "Wyrażam zgodę na przetwarzanie danych osobowych przez Robert Bosch Polska w celu i zakresie niezbędnym w procesie analizy wyników niniejszej ankiety." }, isRequired: true, label: { pl: "Wyrażam zgodę na przetwarzanie danych osobowych przez Robert Bosch Polska w celu i zakresie niezbędnym w procesie analizy wyników niniejszej ankiety." } }], title: { pl: "Dane osobowe" } }, { name: "Ankieta", elements: [{ type: "boolean", name: "AgreementForDataProcessing", visibleIf: "{FirstAndLastName} notempty or {Department} notempty", title: { pl: "Wyrażam zgodę na przetwarzanie danych osobowych przez Robert Bosch Polska w celu i zakresie niezbędnym w procesie analizy danych statystycznych." }, isRequired: true }, { type: "dropdown", name: "TimeOfTravel", title: { pl: "Ile czasu dziennie zajmują Ci dojazdy do pracy?" }, isRequired: true, choices: [{ value: "LessThanHour", text: { pl: "Mniej niż godzinę" } }, { value: "BetweenOneAndTwoHours", text: { pl: "Od jednej do dwóch godzin" } }, { value: "MoreThanTwoHours", text: { pl: "Więcej niż dwie godziny" } }, { value: "HardToSay", text: { pl: "Trudno powiedzieć" } }] }, { type: "dropdown", name: "AreYouUsingPublicTransportation", title: { pl: "Czy dojeżdżasz do pracy korzystając z komunikacji miejskiej?" }, isRequired: true, choices: [{ value: "Yes", text: { pl: "TAK" } }, { value: "No", text: { pl: "NIE" } }, { value: "NoBut", text: { pl: "NIE, ale dojeżdzałbym/dojeżdżałabym gdyby..." } }] }, { type: "text", name: "WhatWouldConvinceYouToUsePublicTransportation", visibleIf: "{AreYouUsingPublicTransportation} = \"NoBut\"", title: { pl: "Co skłoniłoby Cię do używania komunikacji miejskiej?" }, isRequired: true, placeHolder: { pl: "Latające pociągi, teleportacja, itp..." } }, { type: "checkbox", name: "CommonicationOptions", visibleIf: "{AreYouUsingPublicTransportation} = \"Yes\" or {AreYouUsingPublicTransportation} = \"NoBut\"", title: { pl: "Jakich środków komunikacji miejskiej używasz lub używałbyś/używałabyś dojeżdżając do pracy?" }, isRequired: true, choices: [{ value: "ZTM_WKD", text: { pl: "ZTM (z WKD włącznie)" } }, { value: "KM", text: { pl: "Koleje Mazowieckie" } }, "PKP", { value: "OTHERS", text: { pl: "Inne..." } }] }, { type: "text", name: "OtherCommunicationOptions", visibleIf: "{CommonicationOptions} contains \"OTHERS\"", isRequired: true, titleLocation: "hidden", placeHolder: { pl: "Podaj 'inne' środki komunikacji..." } }, { type: "dropdown", name: "AreyInterestedInBenefit", visibleIf: "{AreYouUsingPublicTransportation} = \"Yes\" or {AreYouUsingPublicTransportation} = \"NoBut\"", title: { pl: "Czy byłbyś/byłabyś zainteresowana dopłatą do biletów komunikacji miejskiej?" }, isRequired: true, choices: [{ value: "Yes", text: { pl: "TAK" } }, { value: "No", text: { pl: "NIE" } }] }], title: { default: "Personal data", pl: "Ankieta" } }], cookieName: "surveySessionId", showPageTitles: false, startSurveyText: "Rozpocznij", pagePrevText: "Wstecz", pageNextText: "Dalej", completeText: "Gotowe!" }
+
+        console.log(surveyJSON);
+
 
 
         function sendDataToServer(survey) {
@@ -54,7 +67,8 @@
         $("#surveyContainer").Survey({
             model: survey,
             onComplete: sendDataToServer
-        });</script>
+        });
+    </script>
 </body>
 
 </html>
