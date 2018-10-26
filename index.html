@@ -15,17 +15,17 @@
     <script src="node_modules\survey-jquery\survey.jquery.min.js"></script>
     <script src="node_modules\bootstrap-material-design\dist\js\material.min.js"></script>
     <script src="node_modules\bootstrap-material-design\dist\js\ripples.min.js"></script>
-    <script src="survey.js"></script>
+    <script src="js\survey.js"></script>
 </head>
 
 <body>
     <main class="w3-padding-24">
-
         <section class="w3-content w3-mobile w3-centered">
-            <article class="w3-card w3-padding w3-margin-top w3-margin-bottom w3-white">
+            <article class="card">
 
                 <!-- Survey injection point-->
                 <div id="surveyContainer" class="w3-padding"></div>
+
 
             </article>
 
@@ -39,27 +39,11 @@
         Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
         Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
         Survey.StylesManager.applyTheme("bootstrapmaterial");
-        
-        $.ajax({
-            async:false,
-            url: "survey.json?" + new Date(),
-            type: "GET",
-            dataType: "json"
-        }).done(function (result) {
-            console.log(result)
-            surveyJSON = JSON.parse(result.responseText);
-        }).fail(function (error) {
-            console.log(error)
-        });
 
+        var lang = getUrlParameter('lang');
 
-        console.log(surveyJSON);
-
-
-
-        function sendDataToServer(survey) {
-            //send Ajax request to your web server.
-            alert("The results are:" + JSON.stringify(survey.data));
+        if (lang) {
+            surveyJSON.locale = lang;
         }
 
         var survey = new Survey.Model(surveyJSON);
@@ -68,6 +52,29 @@
             model: survey,
             onComplete: sendDataToServer
         });
+
+        function sendDataToServer(survey) {
+            //send Ajax request to your web server.
+            alert("The results are:" + JSON.stringify(survey.data));
+            
+        }
+
+
+
+        function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };
     </script>
 </body>
 
