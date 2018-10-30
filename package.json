@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "initdb": "node createDB.js mongodb://localhost:27017/ 8181 8080",
-    "all":"node app.js MONGO_URL=mongodb://localhost:27017/ 8181 8080"
+    "all": "node app.js MONGO_URL=mongodb://localhost:27017/ 8181 8080"
   },
   "author": "",
   "license": "ISC",
